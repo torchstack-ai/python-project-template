@@ -1,1 +1,1 @@
-"""Example package for the Python template.""" 
+"""Example package for the Python template."""

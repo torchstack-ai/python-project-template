@@ -1,18 +1,24 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import psycopg
 
 app = FastAPI()
 
-# Disable CORS. Do not remove this for full-stack development.
+# Origins are controlled via the ALLOWED_ORIGINS env var (comma-separated).
+# Example: ALLOWED_ORIGINS="https://app.example.com,https://admin.example.com"
+_allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=_allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
+
 @app.get("/healthz")
-async def healthz():
+async def healthz() -> dict[str, str]:
+    """Return service health status."""
     return {"status": "ok"}
