@@ -23,7 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check for infra directory
+        id: check_infra
+        run: |
+          if [ -d "infra" ]; then
+            echo "has_infra=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_infra=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Terraform
+        if: steps.check_infra.outputs.has_infra == 'true'
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
@@ -46,10 +56,12 @@ jobs:
       #     service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Terraform Init
+        if: steps.check_infra.outputs.has_infra == 'true'
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init
 
       - name: Terraform Plan
+        if: steps.check_infra.outputs.has_infra == 'true'
         id: plan
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
@@ -58,7 +70,7 @@ jobs:
 
       - name: Post plan to PR
         uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.check_infra.outputs.has_infra == 'true'
         with:
           script: |
             const fs = require('fs');
@@ -84,5 +96,5 @@ jobs:
             });
 
       - name: Fail on plan error
-        if: steps.plan.outcome == 'failure'
+        if: steps.check_infra.outputs.has_infra == 'true' && steps.plan.outcome == 'failure'
         run: exit 1
