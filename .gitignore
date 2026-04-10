@@ -172,3 +172,29 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# ── Terraform / IaC ──
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+*.tfplan
+crash.log
+
+# ── Security scan artifacts ──
+.secrets.baseline
+bandit-report.json
+checkov-results.sarif
+
+# ── Secrets (never commit) ──
+*.pem
+*.key
+
+# ── IDE ──
+.vscode/
+.idea/
+
+# ── OS ──
+.DS_Store
+Thumbs.db

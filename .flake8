@@ -1,6 +1,4 @@
-[flake8]
-max-line-length = 88
-extend-ignore = E203
-exclude = .git,__pycache__,build,dist
-per-file-ignores =
-    __init__.py:F401 
+# DEPRECATED: This file is no longer used.
+# Flake8 has been replaced by Ruff, which is configured in pyproject.toml.
+# This file is kept temporarily to avoid breaking any local tooling.
+# Safe to delete: rm .flake8
